@@ -1,0 +1,18 @@
+# ==============================================================================
+# Experiment 10: Task Automation Agent Dependencies
+# ==============================================================================
+
+# User Interface
+streamlit>=1.35.0,<=1.66.1
+
+# Web Search Provider (maintained DuckDuckGo search)
+duckduckgo-search>=8.0.0,<=8.1.1
+
+# Groq Official LLM SDK
+groq>=1.0.0,<=1.7.0
+
+# Environment Variable Management
+python-dotenv>=1.0.0,<=1.2.4
+
+# Automated Unit Testing Framework
+pytest>=8.0.0,<=9.2.0

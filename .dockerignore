@@ -1,0 +1,31 @@
+# Git and version control
+.git
+.gitignore
+
+# Environment files and credentials (CRITICAL)
+.env
+.env.*
+*.local
+
+# Virtual environments
+.venv
+venv
+env
+
+# Python byte code and caches
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+
+# Documentation and project notes
+docs
+*.md
+!README.md
+
+# IDE files
+.vscode
+.idea
