@@ -9,9 +9,10 @@ app_port: 7860
 
 # Experiment 10: MLOps Deployment of a Task-Automation Agent
 
-[![CI Pipeline](https://github.com/your-username/experiment-10-mlops-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/experiment-10-mlops-agent/actions/workflows/ci.yml)
+[![CI Pipeline](https://github.com/kbhrsiddhi1289/experiment-10-mlops-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/kbhrsiddhi1289/experiment-10-mlops-agent/actions/workflows/ci.yml)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 [![Docker](https://img.shields.io/badge/docker-containerized-blue.svg)](https://www.docker.com/)
+[![Render](https://img.shields.io/badge/Render-deployable-46E3B7.svg)](https://render.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 An end-to-end MLOps pipeline and web application deploying an autonomous **Task-Automation Research Brief Agent**. The agent accepts any user research topic, executes a real-time web search via DuckDuckGo, cleans and deduplicates the search results, and prompts a high-performance **Groq Cloud LLM** (`llama-3.3-70b-versatile` by default) to synthesize an evidence-backed, **exactly three-bullet research brief** with clickable citations.
@@ -157,6 +158,32 @@ The `.github/workflows/ci.yml` pipeline triggers automatically on all pushes and
 4. **Syntax Compilation:** Compiles code with `py_compile`.
 5. **Automated Unit Testing:** Executes all `pytest` suites.
 6. **Docker Build Verification:** Builds the container image without requiring API keys.
+
+---
+
+## 🚀 Render Cloud Deployment
+
+Deploying on [Render](https://render.com/) is fast and free.
+
+### Option A: Using Render Blueprints (Automatic)
+1. Sign in to [Render Dashboard](https://dashboard.render.com/).
+2. Click **New +** &rarr; **Blueprint**.
+3. Connect your GitHub repository: `https://github.com/kbhrsiddhi1289/experiment-10-mlops-agent`.
+4. Render detects `render.yaml` automatically.
+5. In the environment variables prompt, enter your `GROQ_API_KEY`.
+6. Click **Apply**. Render builds and deploys your Streamlit app with a public `onrender.com` URL.
+
+### Option B: Manual Web Service Setup
+1. Click **New +** &rarr; **Web Service**.
+2. Connect `https://github.com/kbhrsiddhi1289/experiment-10-mlops-agent`.
+3. Configure:
+   - **Environment:** `Python 3` (or `Docker`)
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --browser.gatherUsageStats false`
+4. Under **Environment Variables**:
+   - `GROQ_API_KEY` = your Groq API key
+   - `GROQ_MODEL` = `qwen/qwen3.8-27b`
+5. Click **Deploy Web Service**.
 
 ---
 

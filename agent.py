@@ -130,21 +130,96 @@ def clean_search_results(raw_results: Optional[List[Dict[str, Any]]]) -> List[Di
     return cleaned
 
 
+def fetch_duckduckgo_instant_api(topic: str, max_results: int = 5) -> List[Dict[str, str]]:
+    """
+    Query the official DuckDuckGo Instant Answer API as a reliable fallback.
+    Prevents scraper rate-limiting (HTTP 403) from breaking search functionality.
+    """
+    import httpx
+    url = "https://api.duckduckgo.com/"
+    params = {"q": topic, "format": "json", "no_html": "1", "skip_disambig": "0"}
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    
+    try:
+        response = httpx.get(url, params=params, headers=headers, timeout=SEARCH_TIMEOUT_SECONDS)
+        if response.status_code != 200:
+            return []
+        
+        data = response.json()
+        results = []
+        
+        # Primary abstract
+        abstract = data.get("AbstractText", "").strip()
+        abstract_url = data.get("AbstractURL", "").strip()
+        heading = data.get("Heading", "").strip()
+        if abstract and abstract_url:
+            results.append({
+                "title": heading or topic,
+                "url": abstract_url,
+                "body": abstract,
+            })
+            
+        # Related topics
+        related = data.get("RelatedTopics", [])
+        for item in related:
+            if isinstance(item, dict) and "FirstURL" in item and "Text" in item:
+                results.append({
+                    "title": item.get("Text", "")[:60] or "DuckDuckGo Topic",
+                    "url": item["FirstURL"],
+                    "body": item["Text"],
+                })
+            elif isinstance(item, dict) and "Topics" in item:
+                for sub in item.get("Topics", []):
+                    if isinstance(sub, dict) and "FirstURL" in sub and "Text" in sub:
+                        results.append({
+                            "title": sub.get("Text", "")[:60] or "DuckDuckGo Topic",
+                            "url": sub["FirstURL"],
+                            "body": sub["Text"],
+                        })
+            if len(results) >= max_results:
+                break
+                
+        return clean_search_results(results[:max_results])
+    except Exception as e:
+        logger.debug(f"DuckDuckGo Instant API fallback error: {e}")
+        return []
+
+
 def search_web(topic: str, max_results: int = MAX_SEARCH_RESULTS) -> List[Dict[str, str]]:
     """
     Perform a live web search using DuckDuckGo.
+    Uses DDGS news and text endpoints with resilient fallbacks to DuckDuckGo Instant API.
     Returns cleaned search results.
     """
     logger.info(f"Executing search for topic: '{topic[:50]}' (max_results={max_results})")
+    raw_results = []
+    
     try:
         ddgs = DDGS(timeout=int(SEARCH_TIMEOUT_SECONDS))
-        results = ddgs.text(keywords=topic, max_results=max_results)
-        cleaned = clean_search_results(results)
-        logger.info(f"Retrieved {len(cleaned)} cleaned search results")
-        return cleaned
+        # 1. Try news search
+        try:
+            raw_results = ddgs.news(keywords=topic, max_results=max_results)
+        except Exception as ne:
+            logger.debug(f"DDGS news search notice: {ne}")
+
+        # 2. If news returned empty, try text search
+        if not raw_results:
+            try:
+                raw_results = ddgs.text(keywords=topic, max_results=max_results)
+            except Exception as te:
+                logger.debug(f"DDGS text search notice: {te}")
     except Exception as e:
-        logger.error(f"Search failed for topic '{topic[:50]}': {type(e).__name__} - {str(e)}")
-        raise RuntimeError(f"Web search error: {str(e)}") from e
+        logger.debug(f"DDGS initialization notice: {e}")
+
+    cleaned = clean_search_results(raw_results)
+
+    # 3. If DDGS returned no results or was rate-limited, use DuckDuckGo Instant API
+    if not cleaned:
+        logger.info(f"Using DuckDuckGo Instant API fallback for: '{topic[:50]}'")
+        cleaned = fetch_duckduckgo_instant_api(topic, max_results=max_results)
+
+    logger.info(f"Retrieved {len(cleaned)} cleaned search results")
+    return cleaned
 
 
 def parse_bullet_points(llm_output: str) -> List[str]:

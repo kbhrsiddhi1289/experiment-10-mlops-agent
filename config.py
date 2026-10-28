@@ -13,7 +13,7 @@ load_dotenv()
 
 # Default configuration parameters
 APP_VERSION = "1.1.0"
-DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile"
+DEFAULT_GROQ_MODEL = "qwen/qwen3.8-27b"
 DEFAULT_PORT = 8501
 MAX_TOPIC_LENGTH = 300
 MAX_SEARCH_RESULTS = 5

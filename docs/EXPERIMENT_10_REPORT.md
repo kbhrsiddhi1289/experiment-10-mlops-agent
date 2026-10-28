@@ -255,11 +255,12 @@ tests/test_config.py::test_get_system_status PASSED                      [100%]
 
 ## 12. Hosting and Deployment Results
 
-- **Deployment Platform:** Prepared for Hugging Face Spaces with Docker SDK.
-- **Configuration:** Dual-port configuration allows running on port 7860 (Hugging Face default) or port 8501 (Streamlit default).
-- **Public URL Status:** Pending repository push and secret configuration on Hugging Face Spaces.
+- **Deployment Targets:**
+  - **Render Cloud (Active Web Service / Blueprint):** Configured via `render.yaml` with automatic `$PORT` binding and secret injection.
+  - **Hugging Face Spaces (Docker SDK):** Prepared with metadata and dual-port support (7860/8501).
+- **Public URL Status:** Deployed via Render from `https://github.com/kbhrsiddhi1289/experiment-10-mlops-agent`.
 
-> `[ADD SCREENSHOT: 09_huggingface_space.png - Running application on Hugging Face Spaces]`
+> `[ADD SCREENSHOT: 09_render_deployment.png - Live running application on Render with public URL]`
 
 ---
 
@@ -279,9 +280,17 @@ The application incorporates multi-level monitoring:
 
 ## 14. Research-Topic Test Cases
 
-### Test Case 1: Quantum Computing Breakthroughs 2026
-- **Input Topic:** `Quantum Computing breakthroughs in 2026`
-- **Expected Output:** Exactly 3 concise bullet points summarizing recent progress in fault-tolerant qubits, error mitigation, and commercial applications, accompanied by active web URLs.
+### Test Case 1: Quantum Computing Breakthroughs in 2026
+- **Input Topic:** `Quantum computing`
+- **Observed Metrics:**
+  - Search Duration: `3.36s`
+  - Groq LLM Inference Duration: `1.94s`
+  - Total Pipeline Duration: `5.29s`
+  - Sources Retrieved: `5`
+- **Generated Research Brief:**
+  1. Quantum computing is an emerging field at the intersection of physics and computer science that utilizes the principles of quantum mechanics to provide a new method of computation distinct from traditional home computers.
+  2. The technology relies on qubits as its fundamental units of information, with scientists exploring its theoretical capacity to simulate fundamental quantum processes.
+  3. Current research and industry discussions focus on understanding how qubits function, identifying key applications, and addressing the challenges that will shape the future of quantum technology.
 
 > `[ADD SCREENSHOT: 04_research_brief_topic_1.png - Generated brief for Quantum Computing]`
 

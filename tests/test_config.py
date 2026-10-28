@@ -63,10 +63,11 @@ def test_get_server_port():
 
 def test_is_api_key_configured():
     """Verify API key existence checking."""
-    assert is_api_key_configured(None) is False
-    assert is_api_key_configured("") is False
-    assert is_api_key_configured("short") is False
-    assert is_api_key_configured("gsk_valid_length_key_12345") is True
+    with mock.patch.dict(os.environ, {}, clear=True):
+        assert is_api_key_configured(None) is False
+        assert is_api_key_configured("") is False
+        assert is_api_key_configured("short") is False
+        assert is_api_key_configured("gsk_valid_length_key_12345") is True
 
 
 def test_mask_api_key():
