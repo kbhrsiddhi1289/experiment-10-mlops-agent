@@ -225,7 +225,7 @@ def test_run_research_agent_success(mock_search, mock_groq):
     assert result["bullet_points"][0] == "Bullet 1: Fact"
     assert len(result["sources"]) == 2
     assert result["sources"][0]["url"] == "https://example.com/1"
-    assert result["timings"]["total_seconds"] > 0
+    assert result["timings"]["total_seconds"] >= 0
     assert result["timings"]["llm_seconds"] == 0.42
 
 

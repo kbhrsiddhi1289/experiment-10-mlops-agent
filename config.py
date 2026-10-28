@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Default configuration parameters
+APP_VERSION = "1.1.0"
 DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile"
 DEFAULT_PORT = 8501
 MAX_TOPIC_LENGTH = 300
@@ -79,6 +80,7 @@ def get_system_status(override_key: Optional[str] = None) -> Dict[str, Any]:
     """
     key = get_api_key(override_key)
     return {
+        "app_version": APP_VERSION,
         "search_provider": "DuckDuckGo (Live Web)",
         "search_status": "Ready",
         "llm_provider": "Groq Cloud",
